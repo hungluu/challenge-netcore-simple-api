@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  stores-api:
+    image: ${DOCKER_REGISTRY-}storesapi
+    build:
+      context: .
+      dockerfile: Stores/Stores.API/Dockerfile
+    env_file:
+      - ./Config/Stores/.env
+      - ./Config/Stores/secrets.env
+    depends_on:
+      - stores-db
+    networks:
+      - stores-net
+  
+  stores-db:
+    image: "mcr.microsoft.com/mssql/server"
+    env_file:
+      - ./Config/Stores/.env
+      - ./Config/Stores/secrets.env
+    environment:
+      ACCEPT_EULA: "Y"
+    networks:
+      - stores-net
+
+networks:
+  stores-net:
